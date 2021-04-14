@@ -6,49 +6,62 @@ import os
 app = flask.Flask(__name__)
 radios = json.load(open('radios.json', 'r'))['radios']
 p = None
+selected_radio = 0
 
 @app.route('/')
-def main():
-    html = "<html><head></head><body><center>"
+def frontend():
+    global selected_radio
+    html = """<html><head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></head><body>"""
+    html += """<div class='container'/>"""
 
     for radio_id, radio in enumerate(radios):
+        additionnal_style = ""
+        if radio_id == selected_radio:
+            additionnal_style = "font-weight:bold; color:red"
         html += """
-<div
-    style="cursor:pointer;border: solid 1px black; margin:10px; padding: 10px; border-radius: 5px; text-align: center; width: 300px;"
-    onclick="fetch(window.location.origin+'/radio/{}')">
-    {}
+<div class='row'>
+    <div class='col-sm-12'>
+        <center>
+            <a
+                class = "btn btn-outline-secondary"
+                style = "width:50%;min-width:200px;margin-top:10px;{}"
+                href="/radio/{}">
+                {}
+            </a>
+        </center>
+    </div>
 </div>
-""".format(radio_id,radio['name'])
+""".format(additionnal_style, radio_id, radio['name'])
 
-    html += "</center></body></html>"
+    html += "</div></body></html>"
     return html
 
 
 @app.route('/radio/<radio_id>')
 def select_radio(radio_id):
-    global p
+    global p, selected_radio
     with open('default_radio.txt', 'w') as f:
         f.write(radio_id)
     radio_id = int(radio_id)
+    selected_radio = radio_id
     if p is not None:
         p.kill()
     p = subprocess.Popen(['mplayer', radios[radio_id]['url']])
-    return ""
+    return frontend()
 
 
 if os.path.isfile('default_radio.txt'):
     with open('default_radio.txt', 'r') as f:
-        radio_id = f.readline()
-        print(radio_id)
+        selected_radio = f.readline()
     try:
-        radio_id = int(radio_id)
+        selected_radio = int(selected_radio)
     except ValueError:
-        radio_id = 0
-    if radio_id>=len(radios) and radio_id<0:
-        radio_id = 0
+        selected_radio = 0
+    if selected_radio>=len(radios) and selected_radio<0:
+        selected_radio = 0
 else:
-    radio_id=0
-select_radio(str(radio_id))
+    selected_radio=0
+select_radio(str(selected_radio))
 
 
 
