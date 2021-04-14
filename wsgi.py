@@ -1,4 +1,5 @@
+import piradio
 from piradio import app as application
 
 if __name__ == "__main__":
-    application.run(host="O.O.O.O", port=80)
+    application.run(host="127.0.0.1", port=8000)
