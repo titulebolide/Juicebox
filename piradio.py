@@ -1,12 +1,12 @@
-import subprocess
 import flask
 import json
 import os
 import alsaaudio
+import mpv
 
 app = flask.Flask(__name__)
 radios = json.load(open('radios.json', 'r'))['radios']
-p = None
+player = mpv.MPV()
 selected_radio = 0
 stopped = False
 mixer = alsaaudio.Mixer(alsaaudio.mixers()[0])
@@ -96,24 +96,20 @@ def frontend():
 
 @app.route('/radio/<radio_id>')
 def select_radio(radio_id):
-    global p, selected_radio,stopped
+    global player, selected_radio,stopped
     stopped = False
     with open('default_radio.txt', 'w') as f:
         f.write(radio_id)
     radio_id = int(radio_id)
     selected_radio = radio_id
-    if p is not None:
-        p.kill()
-        p = None
-    p = subprocess.Popen(['mplayer', radios[radio_id]['url']])
+    player.stop()
+    player.play(radios[radio_id]['url'])
     return frontend()
 
 @app.route('/stop/')
 def stop():
-    global p, selected_radio, stopped
-    if p is not None:
-        p.kill()
-        p = None
+    global player, stopped
+    player.stop()
     stopped = True
     return frontend()
 
@@ -140,7 +136,6 @@ else:
     selected_radio=0
 if not stopped:
     select_radio(str(selected_radio))
-
 
 
 if __name__ == "__main__":
