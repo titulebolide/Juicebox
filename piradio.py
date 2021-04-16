@@ -23,11 +23,11 @@ def setvolume(vol):
 def frontend():
     global selected_radio, stopped
     html = """<html><head><meta charset="UTF-8"/><meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></head><body>"""
-    html += """<center class='container'/><div style="width:50%;min-width:200px;">"""
+    html += """<center class='container'/><div style="width:50%;min-width:350px;">"""
 
     html += """
 <div class='row'>
-    <div class='col-sm-3'>
+    <div class='col-sm-2'>
         <center>
             <a
                 class = "btn btn-outline-secondary"
@@ -37,12 +37,12 @@ def frontend():
             </a>
         </center>
     </div>
-    <div class='col-sm-6' style='padding-top:18px;'>
+    <div class='col-sm-8' style='padding-top:18px;'>
         <center>
             Volume : {} %
         </center>
     </div>
-    <div class='col-sm-3'>
+    <div class='col-sm-2'>
         <center>
             <a
                 class = "btn btn-outline-secondary"
