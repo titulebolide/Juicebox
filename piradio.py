@@ -2,18 +2,58 @@ import subprocess
 import flask
 import json
 import os
+import alsaaudio
 
 app = flask.Flask(__name__)
 radios = json.load(open('radios.json', 'r'))['radios']
 p = None
 selected_radio = 0
 stopped = False
+mixer = alsaaudio.Mixer(alsaaudio.mixers()[0])
+
+def getvolume():
+    global mixer
+    return int(mixer.getvolume()[0])
+
+def setvolume(vol):
+    global mixer
+    mixer.setvolume(max(0,min(100,vol)))
 
 @app.route('/')
 def frontend():
     global selected_radio, stopped
     html = """<html><head><meta charset="UTF-8"/><meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></head><body>"""
-    html += """<div class='container'/>"""
+    html += """<center class='container'/><div style="width:50%;min-width:200px;">"""
+
+    html += """
+<div class='row'>
+    <div class='col-sm-3'>
+        <center>
+            <a
+                class = "btn btn-outline-secondary"
+                style = "width:100%;margin-top:10px;font-weight:bold;"
+                href="/volumedown/">
+                -
+            </a>
+        </center>
+    </div>
+    <div class='col-sm-6' style='padding-top:18px;'>
+        <center>
+            Volume : {} %
+        </center>
+    </div>
+    <div class='col-sm-3'>
+        <center>
+            <a
+                class = "btn btn-outline-secondary"
+                style = "width:100%;margin-top:10px;font-weight:bold;"
+                href="/volumeup/">
+                +
+            </a>
+        </center>
+    </div>
+</div>
+""".format(getvolume())
 
     if stopped:
         btn_type='success'
@@ -30,7 +70,7 @@ def frontend():
         <center>
             <a
                 class = "btn btn-outline-{}"
-                style = "width:50%;min-width:200px;margin-top:10px;"
+                style = "width:100%;margin-top:10px;"
                 href="{}">
                 {}
             </a>
@@ -49,7 +89,7 @@ def frontend():
         <center>
             <a
                 class = "btn btn-outline-secondary"
-                style = "width:50%;min-width:200px;margin-top:10px;{}"
+                style = "width:100%;margin-top:10px;{}"
                 href="/radio/{}">
                 {}
             </a>
@@ -58,7 +98,7 @@ def frontend():
 </div>
 """.format(additionnal_style, radio_id, radio['name'])
 
-    html += "</div></body></html>"
+    html += "</div></center></body></html>"
     return html
 
 
@@ -85,6 +125,15 @@ def stop():
     stopped = True
     return frontend()
 
+@app.route('/volumeup/')
+def volumeup():
+    setvolume(getvolume()+3)
+    return frontend()
+
+@app.route('/volumedown/')
+def volumedown():
+    setvolume(getvolume()-3)
+    return frontend()
 
 if os.path.isfile('default_radio.txt'):
     with open('default_radio.txt', 'r') as f:

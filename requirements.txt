@@ -1,1 +1,2 @@
 flask>=1.1.2
+pyalsaaudio>=0.9.0
