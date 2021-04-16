@@ -23,11 +23,11 @@ def setvolume(vol):
 def frontend():
     global selected_radio, stopped
     html = """<html><head><meta charset="UTF-8"/><meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></head><body>"""
-    html += """<center class='container'/><div style="width:50%;min-width:350px;">"""
+    html += """<center style="width:100vw"/><div style="width:50%;min-width:350px;">"""
 
     html += """
-<div class='row'>
-    <div class='col-sm-2'>
+<div style='display:flex;'>
+    <div style='flex:1'>
         <center>
             <a
                 class = "btn btn-outline-secondary"
@@ -37,12 +37,12 @@ def frontend():
             </a>
         </center>
     </div>
-    <div class='col-sm-8' style='padding-top:18px;'>
+    <div style='padding-top:18px;flex:3;'>
         <center>
             Volume : {} %
         </center>
     </div>
-    <div class='col-sm-2'>
+    <div style='flex:1'>
         <center>
             <a
                 class = "btn btn-outline-secondary"
@@ -65,17 +65,13 @@ def frontend():
         text='Pause'
 
     html += """
-<div class='row'>
-    <div class='col-sm-12'>
-        <center>
-            <a
-                class = "btn btn-outline-{}"
-                style = "width:100%;margin-top:10px;"
-                href="{}">
-                {}
-            </a>
-        </center>
-    </div>
+<div>
+    <a
+        class = "btn btn-outline-{}"
+        style = "width:100%;margin-top:10px;"
+        href="{}">
+        {}
+    </a>
 </div>
 """.format(btn_type, href, text)
 
@@ -84,17 +80,13 @@ def frontend():
         if radio_id == selected_radio:
             additionnal_style = "font-weight:bold; color:red"
         html += """
-<div class='row'>
-    <div class='col-sm-12'>
-        <center>
-            <a
-                class = "btn btn-outline-secondary"
-                style = "width:100%;margin-top:10px;{}"
-                href="/radio/{}">
-                {}
-            </a>
-        </center>
-    </div>
+<div>
+    <a
+        class = "btn btn-outline-secondary"
+        style = "width:100%;margin-top:10px;{}"
+        href="/radio/{}">
+        {}
+    </a>
 </div>
 """.format(additionnal_style, radio_id, radio['name'])
 
