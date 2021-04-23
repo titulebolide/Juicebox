@@ -99,6 +99,18 @@ def frontend():
 </div>
 """.format(btn_type, href, text)
 
+    html += """
+<div style='margin-top:20px;margin-bottom:10px'>
+    <form action="/yt" style="margin:0">
+        <div style='display:flex'>
+            <input style='flex:4; margin-right:20px;' type="text" id="url" name="url" placeholder='Youtube Video URL'>
+            <button class="btn btn-outline-primary" style='flex:1' type='submit'>Play</button>
+        </div>
+    </form>
+</div>
+"""
+
+
     for radio_id, radio in enumerate(radios):
         additionnal_style = ""
         if radio_id == selected_radio:
@@ -113,17 +125,6 @@ def frontend():
     </a>
 </div>
 """.format(additionnal_style, radio_id, radio['name'])
-
-    html += """
-<div>
-    <form action="/yt">
-        <div style='display:flex'>
-            <input style='flex:4' type="text" id="ytid" name="ytid" placeholder='Youtube Video ID'>
-            <button style='flex:1' type='submit'>Play</button>
-        </div>
-    </form>
-</div>
-"""
 
     html += "</div></center></body></html>"
     return html
@@ -143,9 +144,9 @@ def select_radio(radio_id):
 
 @app.route('/yt/')
 def youtube():
-    ytid = flask.request.args.get('ytid')
+    url = flask.request.args.get('url')
     player.stop()
-    player.play("https://www.youtube.com/watch?v="+ytid)
+    player.play(url)
     return frontend()
 
 @app.route('/stop/')
