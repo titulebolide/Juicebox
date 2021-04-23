@@ -21,6 +21,14 @@
       "url" : "http://direct.fipradio.fr/live/fip-webradio2.mp3"
     },
     {
+      "name" : "FIP Reggae",
+      "url" : "http://direct.fipradio.fr/live/fip-webradio6.mp3"
+    },
+    {
+      "name" : "Jazz Radio",
+      "url" : "http://jazzradio.ice.infomaniak.ch/jazzradio-high.mp3"
+    },
+    {
       "name" : "RTL2",
       "url" : "http://streaming.radio.rtl2.fr/rtl2-1-44-128"
     }
