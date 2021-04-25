@@ -15,6 +15,7 @@ stopped = False
 mixer = alsaaudio.Mixer(alsaaudio.mixers()[0])
 playYT = False
 YTHandlingThread = None
+playingTitle = ""
 
 @app.route('/')
 def frontend():
@@ -45,6 +46,16 @@ def frontend():
 <body>
 """
     html += """<center style="width:100vw"/><div style="width:50%;min-width:350px;">"""
+
+    if playingTitle != "":
+        html += """
+<div style="border-bottom: 1px solid black; margin:10px; padding:10px;">
+    <h2>
+        {}
+    </h2>
+</div>
+
+""".format(playingTitle)
 
     html += """
 <div style='display:flex;'>
@@ -129,11 +140,12 @@ def frontend():
 
 @app.route('/radio/<radio_id>')
 def select_radio(radio_id):
-    global player, selected_radio,stopped
+    global player, selected_radio, stopped, playingTitle
     stopped = False
     with open('default_radio.txt', 'w') as f:
         f.write(radio_id)
     radio_id = int(radio_id)
+    playingTitle = radios[radio_id]['name']
     selected_radio = radio_id
     stopPlaying()
     player.play(radios[radio_id]['url'])
@@ -141,10 +153,11 @@ def select_radio(radio_id):
 
 @app.route('/yt/')
 def youtube():
-    global YTHandlingThread
+    global YTHandlingThread, playingTitle
     url = flask.request.args.get('url')
     stopPlaying()
     ytid = url.split('/')[-1].split('=')[-1]
+    playingTitle = getYTTitle(ytid)
     YTHandlingThread = threading.Thread(target=handleYT, args=(ytid,))
     YTHandlingThread.start()
     return frontend()
@@ -167,9 +180,12 @@ def volumedown():
     return frontend()
 
 def handleYT(ytid):
-    global playYT
+    global playYT, playingTitle
     playYT = True
+    firstVideo = True
     while playYT:
+        if not firstVideo:
+            playingTitle = getYTTitle(ytid)
         player.stop()
         player.play("https://www.youtube.com/watch?v="+ytid)
         player.wait_until_playing()
@@ -179,6 +195,7 @@ def handleYT(ytid):
                 ytid, config.API_KEY
             )
         ).json()["items"][0]['id']['videoId']
+        firstVideo = False
     return
 
 def stopPlaying():
@@ -199,6 +216,13 @@ def getvolume():
 def setvolume(vol):
     global mixer
     mixer.setvolume(max(0,min(100,vol)))
+
+def getYTTitle(ytid):
+    return requests.get(
+        "https://www.googleapis.com/youtube/v3/videos?part=snippet&id={}&key={}".format(
+            ytid, config.API_KEY
+        )
+    ).json()['items'][0]['snippet']['title']
 
 if os.path.isfile('default_radio.txt'):
     with open('default_radio.txt', 'r') as f:
