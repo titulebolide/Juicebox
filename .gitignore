@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 venv/
 default_radio.txt
+config.py

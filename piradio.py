@@ -3,6 +3,9 @@ import json
 import os
 import alsaaudio
 import mpv
+import threading
+import requests
+import config
 
 app = flask.Flask(__name__, static_folder='static')
 radios = json.load(open('radios.json', 'r'))['radios']
@@ -10,14 +13,8 @@ player = mpv.MPV(ytdl=True, video='no')
 selected_radio = 0
 stopped = False
 mixer = alsaaudio.Mixer(alsaaudio.mixers()[0])
-
-def getvolume():
-    global mixer
-    return int(mixer.getvolume()[0])
-
-def setvolume(vol):
-    global mixer
-    mixer.setvolume(max(0,min(100,vol)))
+playYT = False
+YTHandlingThread = None
 
 @app.route('/')
 def frontend():
@@ -138,21 +135,24 @@ def select_radio(radio_id):
         f.write(radio_id)
     radio_id = int(radio_id)
     selected_radio = radio_id
-    player.stop()
+    stopPlaying()
     player.play(radios[radio_id]['url'])
     return frontend()
 
 @app.route('/yt/')
 def youtube():
+    global YTHandlingThread
     url = flask.request.args.get('url')
-    player.stop()
-    player.play(url)
+    stopPlaying()
+    ytid = url.split('/')[-1].split('=')[-1]
+    YTHandlingThread = threading.Thread(target=handleYT, args=(ytid,))
+    YTHandlingThread.start()
     return frontend()
 
 @app.route('/stop/')
 def stop():
     global player, stopped
-    player.stop()
+    stopPlaying()
     stopped = True
     return frontend()
 
@@ -165,6 +165,40 @@ def volumeup():
 def volumedown():
     setvolume(getvolume()-3)
     return frontend()
+
+def handleYT(ytid):
+    global playYT
+    playYT = True
+    while playYT:
+        player.stop()
+        player.play("https://www.youtube.com/watch?v="+ytid)
+        player.wait_until_playing()
+        player.wait_for_playback()
+        ytid = requests.get(
+            "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(
+                ytid, config.API_KEY
+            )
+        ).json()["items"][0]['id']['videoId']
+    return
+
+def stopPlaying():
+    global playYT, YTHandlingThread
+    if playYT:
+        playYT = False
+        player.stop()
+        YTHandlingThread.join()
+        YTHandlingThread = None
+    else:
+        player.stop()
+    return
+
+def getvolume():
+    global mixer
+    return int(mixer.getvolume()[0])
+
+def setvolume(vol):
+    global mixer
+    mixer.setvolume(max(0,min(100,vol)))
 
 if os.path.isfile('default_radio.txt'):
     with open('default_radio.txt', 'r') as f:
