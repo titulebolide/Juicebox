@@ -164,9 +164,7 @@ def youtube():
 
 @app.route('/stop/')
 def stop():
-    global player, stopped
     stopPlaying()
-    stopped = True
     return frontend()
 
 @app.route('/volumeup/')
@@ -183,6 +181,7 @@ def handleYT(ytid):
     global playYT, playingTitle
     playYT = True
     firstVideo = True
+    previousYTId = None
     while playYT:
         if not firstVideo:
             playingTitle = getYTTitle(ytid)
@@ -190,16 +189,23 @@ def handleYT(ytid):
         player.play("https://www.youtube.com/watch?v="+ytid)
         player.wait_until_playing()
         player.wait_for_playback()
-        ytid = requests.get(
+        items = requests.get(
             "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(
                 ytid, config.API_KEY
             )
-        ).json()["items"][0]['id']['videoId']
+        ).json()["items"]
+
+        tempytid = items[0]['id']['videoId']
+        if not firstVideo:
+            if tempYTId == previousYTId:
+                tempytid = items[1]['id']['videoId']
+        previousYTId = ytid
+        ytid = tempYTId
         firstVideo = False
     return
 
 def stopPlaying():
-    global playYT, YTHandlingThread
+    global playYT, YTHandlingThread, stopped
     if playYT:
         playYT = False
         player.stop()
@@ -207,6 +213,7 @@ def stopPlaying():
         YTHandlingThread = None
     else:
         player.stop()
+    stopped = True
     return
 
 def getvolume():
