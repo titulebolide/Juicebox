@@ -1,4 +1,4 @@
-# PiRadio
+# [WIP] PiRadio
 Turn your raspberry pi into a web radio receiver, with a web interface.
 
 ## Install
