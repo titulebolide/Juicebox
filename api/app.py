@@ -5,11 +5,12 @@ import alsaaudio
 import mpv
 import threading
 import requests
-import config
-from flask_cors import CORS
 
 app = flask.Flask(__name__, static_folder = '../gui/build/', static_url_path="/")
-CORS(app)
+
+if os.environ.get('PIRADIO_DEV') is not None:
+    from flask_cors import CORS
+    CORS(app)
 
 config = json.load(open('../config.json', 'r'))
 player = mpv.MPV(ytdl=True, video='no')
