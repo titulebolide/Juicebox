@@ -1,0 +1,37 @@
+{
+  "YT_API_KEY" : "youtube api key",
+  "radios" : [
+    {
+      "name" : "RTL",
+      "url" : "http://streaming.radio.rtl.fr/rtl-1-44-128"
+    },
+    {
+      "name" : "France Inter",
+      "url" : "http://icecast.radiofrance.fr/franceinter-midfi.mp3"
+    },
+    {
+      "name" : "France Info",
+      "url" : "http://direct.franceinfo.fr/live/franceinfo-midfi.mp3"
+    },
+    {
+      "name" : "FIP",
+      "url" : "http://direct.fipradio.fr/live/fip-midfi.mp3"
+    },
+    {
+      "name" : "FIP Jazz",
+      "url" : "http://direct.fipradio.fr/live/fip-webradio2.mp3"
+    },
+    {
+      "name" : "FIP Reggae",
+      "url" : "http://direct.fipradio.fr/live/fip-webradio6.mp3"
+    },
+    {
+      "name" : "Jazz Radio",
+      "url" : "http://jazzradio.ice.infomaniak.ch/jazzradio-high.mp3"
+    },
+    {
+      "name" : "RTL2",
+      "url" : "http://streaming.radio.rtl2.fr/rtl2-1-44-128"
+    }
+  ]
+}
