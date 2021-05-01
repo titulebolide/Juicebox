@@ -60,6 +60,8 @@ def select_radio(radio_id):
 def youtube():
     global YTHandlingThread, playingTitle
     url = flask.request.args.get('url')
+    if url.endswith('/'): url = url[:-1]
+    print(url)
     stopPlaying()
     ytid = url.split('/')[-1].split('=')[-1]
     playingTitle = getYTTitle(ytid)

@@ -10,6 +10,9 @@ if (process.env.NODE_ENV === 'development') {
 class App extends React.Component {
 
 
+  ytURLInputRef = React.createRef()
+
+
   state = {
     volume : 0,
     title : "",
@@ -51,6 +54,14 @@ class App extends React.Component {
       })
     })
   )
+
+
+  submitYTURL = e => {
+    e.preventDefault();
+    let elt = e.target.form[0]
+    this.getCallAPI('yt?url='+encodeURIComponent(elt.value))(e)
+    elt.value = ""
+  }
 
 
   getStyleRadioBtn = (id) => {
@@ -118,13 +129,10 @@ class App extends React.Component {
 
 
           <div style={{'marginTop':'20px','marginBottom':'10px'}}>
-              <iframe title="dummyframe" name="dummyframe" id="dummyframe" style={{"display": "none"}}/>
-              <form action={API_URL + '/yt'} target="dummyframe" style={{"margin":"0"}}>
-                  <div style={{'display':'flex'}}>
-                      <input style={{'flex':'4', 'marginRight':'20px'}} type="text" id="url" name="url" placeholder='Youtube Video URL'/>
-                      <button className="btn btn-outline-primary" style={{'flex':'1'}} type='submit'>Play</button>
-                  </div>
-              </form>
+            <form action={API_URL + '/yt'} style={{'display':'flex'}}>
+              <input name='url' style={{'flex':'4', 'marginRight':'20px'}} placeholder='Youtube Video URL' ref={this.ytURLInputRef}/>
+              <button type='submit' className="btn btn-outline-primary" style={{'flex':'1'}} onClick={this.submitYTURL}>Play</button>
+            </form>
           </div>
 
 
