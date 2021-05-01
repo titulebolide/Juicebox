@@ -100,7 +100,7 @@ def handleYT(ytid):
         player.wait_for_playback()
         items = requests.get(
             "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(
-                ytid, config.API_KEY
+                ytid, config['YT_API_KEY']
             )
         ).json()["items"]
 
@@ -140,7 +140,7 @@ def setvolume(vol):
 def getYTTitle(ytid):
     return requests.get(
         "https://www.googleapis.com/youtube/v3/videos?part=snippet&id={}&key={}".format(
-            ytid, config.API_KEY
+            ytid, config['YT_API_KEY']
         )
     ).json()['items'][0]['snippet']['title']
 
