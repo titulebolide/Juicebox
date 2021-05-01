@@ -31,8 +31,8 @@ After=network.target
 Type=Simple
 Restart=always
 RestartSec=1
-WorkingDirectory=PIRADIO_FOLDER
-ExecStart=PIRADIO_FOLDER/api/venv/bin/gunicorn --workers=1 --threads=1 --bind 0.0.0.0:PIRADIO_PORT PIRADIO_FOLDER/api/wsgi
+WorkingDirectory=PIRADIO_FOLDER/api
+ExecStart=PIRADIO_FOLDER/api/venv/bin/gunicorn --workers=1 --threads=1 --bind 0.0.0.0:PIRADIO_PORT wsgi
 
 
 [Install]
