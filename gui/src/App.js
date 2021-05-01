@@ -43,7 +43,7 @@ class App extends React.Component {
   )
 
   fetchInfos = () => (
-    fetch(API_URL + '/state').then( response => {
+    fetch(API_URL + '/state/').then( response => {
       response.json().then( data => {
         this.setState({
           volume: data.volume,
@@ -59,7 +59,7 @@ class App extends React.Component {
   submitYTURL = e => {
     e.preventDefault();
     let elt = e.target.form[0]
-    this.getCallAPI('yt?url='+encodeURIComponent(elt.value))(e)
+    this.getCallAPI('yt/?url='+encodeURIComponent(elt.value))(e)
     elt.value = ""
   }
 
