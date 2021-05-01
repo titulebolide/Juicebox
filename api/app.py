@@ -106,10 +106,10 @@ def handleYT(ytid):
             )
         ).json()["items"]
 
-        tempytid = items[0]['id']['videoId']
+        tempYTId = items[0]['id']['videoId']
         if not firstVideo:
             if tempYTId == previousYTId:
-                tempytid = items[1]['id']['videoId']
+                tempYTId = items[1]['id']['videoId']
         previousYTId = ytid
         ytid = tempYTId
         firstVideo = False
