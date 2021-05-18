@@ -5,6 +5,7 @@ import alsaaudio
 import mpv
 import threading
 import requests
+import signal
 import subprocess
 
 app = flask.Flask(__name__, static_folder = '../gui/build/', static_url_path="/")
@@ -35,7 +36,7 @@ class MPV:
     def stop(self):
         if self.proc is None:
             return
-        self.proc.kill()
+        self.proc.terminate()
 
 player = MPV()
 
