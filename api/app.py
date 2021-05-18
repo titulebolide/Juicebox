@@ -37,6 +37,9 @@ class MPV:
             return
         self.proc.kill()
 
+    def wait(self):
+        self.proc.wait()
+
 player = MPV()
 
 @app.route('/')
@@ -115,8 +118,7 @@ def handleYT(ytid):
             playingTitle = getYTTitle(ytid)
         player.stop()
         player.play("https://www.youtube.com/watch?v="+ytid)
-        player.wait_until_playing()
-        player.wait_for_playback()
+        player.wait()
         items = requests.get(
             "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(
                 ytid, config['YT_API_KEY']
