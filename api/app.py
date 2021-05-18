@@ -23,22 +23,19 @@ playingTitle = ""
 
 class MPV:
     def __init__(self):
-        self.pid = None
+        self.proc = None
 
     def play(self, url):
         self.stop()
-        self.pid = subprocess.Popen(
+        self.proc = subprocess.Popen(
             'mpv --no-video {}'.format(url),
             shell=True
-        ).pid
+        )
 
     def stop(self):
-        if self.pid is None:
+        if self.proc is None:
             return
-        subprocess.call(
-            "kill {}".format(self.pid),
-            shell=True
-        )
+        self.proc.kill()
 
 player = MPV()
 
