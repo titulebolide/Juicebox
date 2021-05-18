@@ -1,5 +1,4 @@
 flask>=1.1.2
 pyalsaaudio>=0.9.0
-python-mpv>=0.5.2
 requests>=2.25.1
 gunicorn>=20.1.0

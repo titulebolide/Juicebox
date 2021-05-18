@@ -5,6 +5,7 @@ import alsaaudio
 import mpv
 import threading
 import requests
+import subprocess
 
 app = flask.Flask(__name__, static_folder = '../gui/build/', static_url_path="/")
 
@@ -13,7 +14,6 @@ if os.environ.get('PIRADIO_DEV') is not None:
     CORS(app)
 
 config = json.load(open('../config.json', 'r'))
-player = mpv.MPV(ytdl=True, video='no')
 selected_radio = 0
 stopped = False
 mixer = alsaaudio.Mixer(alsaaudio.mixers()[0])
@@ -21,6 +21,26 @@ playYT = False
 YTHandlingThread = None
 playingTitle = ""
 
+class MPV:
+    def __init__(self):
+        self.pid = None
+
+    def play(self, url):
+        self.stop()
+        self.pid = subprocess.Popen(
+            'mpv --no-video {}'.format(url),
+            shell=True
+        ).pid
+
+    def stop(self):
+        if self.pid is None:
+            return
+        subprocess.call(
+            "kill {}".format(self.pid),
+            shell=True
+        )
+
+player = MPV()
 
 @app.route('/')
 def index():
