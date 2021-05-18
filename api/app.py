@@ -29,14 +29,13 @@ class MPV:
     def play(self, url):
         self.stop()
         self.proc = subprocess.Popen(
-            'mpv --no-video {}'.format(url),
-            shell=True
+            ['mpv', '--no-video', url]
         )
 
     def stop(self):
         if self.proc is None:
             return
-        self.proc.terminate()
+        self.proc.kill()
 
 player = MPV()
 
