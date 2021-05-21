@@ -14,7 +14,7 @@ if os.environ.get('PIRADIO_DEV') is not None:
     from flask_cors import CORS
     CORS(app)
 
-config = json.load(open('../config.json', 'r'))
+conf = json.load(open('../config.json', 'r'))
 selected_radio = 0
 stopped = False
 mixer = alsaaudio.Mixer(alsaaudio.mixers()[0])
@@ -59,7 +59,7 @@ def state():
 
 @app.route("/radios/")
 def getradios():
-    return flask.jsonify({'radios':config['radios']})
+    return flask.jsonify({'radios':conf['radios']})
 
 
 @app.route('/radio/<radio_id>/')
@@ -69,10 +69,10 @@ def select_radio(radio_id):
     with open('default_radio.txt', 'w') as f:
         f.write(radio_id)
     radio_id = int(radio_id)
-    playingTitle = config['radios'][radio_id]['name']
+    playingTitle = conf['radios'][radio_id]['name']
     selected_radio = radio_id
     stopPlaying()
-    player.play(config['radios'][radio_id]['url'])
+    player.play(conf['radios'][radio_id]['url'])
     return "", 200
 
 
@@ -121,7 +121,7 @@ def handleYT(ytid):
         player.wait()
         items = requests.get(
             "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId={}&type=video&key={}".format(
-                ytid, config['YT_API_KEY']
+                ytid, conf['YT_API_KEY']
             )
         ).json()["items"]
 
@@ -161,7 +161,7 @@ def setvolume(vol):
 def getYTTitle(ytid):
     return requests.get(
         "https://www.googleapis.com/youtube/v3/videos?part=snippet&id={}&key={}".format(
-            ytid, config['YT_API_KEY']
+            ytid, conf['YT_API_KEY']
         )
     ).json()['items'][0]['snippet']['title']
 
@@ -173,7 +173,7 @@ if os.path.isfile('default_radio.txt'):
         selected_radio = int(selected_radio)
     except ValueError:
         selected_radio = 0
-    if selected_radio>=len(config['radios']) and selected_radio<0:
+    if selected_radio>=len(conf['radios']) and selected_radio<0:
         selected_radio = 0
 else:
     selected_radio=0

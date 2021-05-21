@@ -1,5 +1,6 @@
 {
   "YT_API_KEY" : "youtube api key",
+  "port" : 8888,
   "radios" : [
     {
       "name" : "RTL",
