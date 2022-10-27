@@ -28,7 +28,7 @@ Description=piradio daemon
 After=network.target
 
 [Service]
-Type=Simple
+Type=simple
 Restart=always
 RestartSec=1
 WorkingDirectory=PIRADIO_FOLDER/api
